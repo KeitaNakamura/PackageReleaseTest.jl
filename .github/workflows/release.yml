@@ -33,7 +33,7 @@ jobs:
             ${{ runner.os }}-test-${{ env.cache-name }}-
             ${{ runner.os }}-test-
             ${{ runner.os }}-
-      - run: julia --proj=@. -e 'using Pkg; pkg"registry add https://github.com/KeitaNakamura/KeitaNakamuraRegistry.git"'
+      - run: julia --proj=@. -e 'using Pkg; Pkg.Registry.add("https://github.com/KeitaNakamura/KeitaNakamuraRegistry.git")'
       - uses: julia-actions/julia-buildpkg@v1
       - name: Compile package
         run: julia --proj=@. -e 'using Pkg; Pkg.add("PackageCompiler"); using PackageCompiler; create_app(".", "PackageReleaseTest (${{ runner.os }})")'
