@@ -39,10 +39,10 @@ jobs:
         shell: bash
       - name: Zip build directory for Linux/MacOS
         if: runner.os == 'Linux' || runner.os == 'macOS'
-        run: zip -r ${{ runner.os }} PackageReleaseTest
+        run: zip -r ${{ runner.os }} "PackageReleaseTest (${{ runner.os }})"
       - name: Zip build directory for Windows
         if: runner.os == 'Windows'
-        run: Compress-Archive -Path PackageReleaseTest -DestinationPath Windows
+        run: Compress-Archive -Path "PackageReleaseTest (Windows)" -DestinationPath Windows
       - name: Upload zip files
         uses: actions/upload-artifact@v2
         with:
