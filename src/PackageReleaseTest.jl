@@ -39,7 +39,7 @@ function julia_main()::Cint
     isempty(ARGS) && throw(ArgumentError("input.toml must be given as the first argument"))
     inputtoml = ARGS[1]
     try
-        main(splitdir(inputtoml)[1], inputtoml)
+        main(inputtoml)
     catch
         Base.invokelatest(Base.display_error, Base.catch_stack())
         return 1
@@ -47,14 +47,14 @@ function julia_main()::Cint
     return 0
 end
 
-function main(proj_dir::AbstractString, inputtoml::AbstractString)
+function main(inputtoml::AbstractString)
     dict = TOML.parsefile(inputtoml)
     list = map(collect(keys(dict))) do section
         subdict = dict[section]
         Symbol(section) => (; (Symbol(key) => value for (key, value) in subdict)...)
     end
     input = (; list...)
-    main(proj_dir, input)
+    main(splitdir(inputtoml)[1], input)
 end
 
 function main(proj_dir::AbstractString, INPUT::NamedTuple)
