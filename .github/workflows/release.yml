@@ -56,6 +56,10 @@ jobs:
     needs: compile
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Write release notes
+        run: git log --pretty="* %s (%an)" $(git describe --tags --abbrev=0)..HEAD >> notes.txt
       - name: Download all zip files
         uses: actions/download-artifact@v2
       - name: Display structure of downloaded files
@@ -63,6 +67,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
+          body_path: notes.txt
           files: |
             Linux/Linux.zip
             macOS/macOS.zip
