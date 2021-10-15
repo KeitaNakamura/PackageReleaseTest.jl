@@ -37,12 +37,18 @@ jobs:
       - name: Compile package
         run: julia --proj=@. -e 'using Pkg; Pkg.add("PackageCompiler"); using PackageCompiler; create_app(".", "build", force=true)'
         shell: bash
-      - name: Zip build directory for Linux/MacOS
-        if: matrix.os == 'ubuntu-latest' || matrix.os == 'macOS-latest'
-        run: zip -r ${{ runner.os }} build
-      - name: Zip build directory for Windows
-        if: matrix.os == 'windows-latest'
-        run: Compress-Archive -Path build -DestinationPath Windows
+      - name: Zip build directory
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ] || [ "$RUNNER_OS" == "macOS" ] ; then
+               zip -r ${{ runner.os }} build
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+               Compress-Archive -Path build -DestinationPath Windows
+          else
+               echo "$RUNNER_OS not supported"
+               exit 1
+          fi
+        shell: bash
+  shell: bash
       - name: Upload zip files
         uses: actions/upload-artifact@v2
         with:
