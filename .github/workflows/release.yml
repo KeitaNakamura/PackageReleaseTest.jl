@@ -72,5 +72,3 @@ jobs:
             Linux/Linux.zip
             macOS/macOS.zip
             Windows/Windows.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
