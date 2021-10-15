@@ -37,27 +37,38 @@ jobs:
       - name: Compile package
         run: julia --proj=@. -e 'using Pkg; Pkg.add("PackageCompiler"); using PackageCompiler; create_app(".", "build", force=true)'
         shell: bash
-      - name: Upload build directory
-        uses: actions/upload-artifact@v2 # upload zip
+      - name: Zip build directory for Linux/MacOS
+        if: ${{ runner.os }} == 'Linux' || ${{ runner.os }} == 'MacOS'
+        run: zip -r ${{ runner.os }} build
+      - name: Zip build directory for Windows
+        if: ${{ runner.os }} == 'Windows'
+        run: Compress-Archive -Path build -DestinationPath Windows
+      - name: Upload zip files
+        uses: actions/upload-artifact@v2
         with:
           name: ${{ runner.os }}
-          path: build
+          path: ${{ runner.os }}.zip
 
   upload:
     name: Create Release
     needs: compile
     runs-on: ubuntu-latest
     steps:
-      - name: Download all zip files
-        uses: actions/download-artifact@v2
-      - name: Display structure of downloaded files
-        run: ls -R
+      - uses: actions/download-artifact@v2
+        with:
+          name: Linux
+      - uses: actions/download-artifact@v2
+        with:
+          name: MacOS
+      - uses: actions/download-artifact@v2
+        with:
+          name: Windows
       - name: GH Release
-        uses: softprops/action-gh-release@v0.1.13
-      # - name: Release
-        # uses: softprops/action-gh-release@v1
-        # with:
-          # files: |
-            # Linux.zip
-            # MacOS.zip
-            # Windows.zip
+        uses: softprops/action-gh-release@v0.1
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            Linux.zip
+            MacOS.zip
+            Windows.zip
