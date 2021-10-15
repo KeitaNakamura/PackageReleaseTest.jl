@@ -54,15 +54,8 @@ jobs:
     needs: compile
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: Linux
-      - uses: actions/download-artifact@v2
-        with:
-          name: MacOS
-      - uses: actions/download-artifact@v2
-        with:
-          name: Windows
+      - name: Download all zip files
+        uses: actions/download-artifact@v2
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
