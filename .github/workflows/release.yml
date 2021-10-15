@@ -34,6 +34,7 @@ jobs:
             ${{ runner.os }}-test-
             ${{ runner.os }}-
       - run: julia --proj=@. -e 'using Pkg; Pkg.Registry.add(RegistrySpec(url = "https://github.com/KeitaNakamura/KeitaNakamuraRegistry.git"))'
+        shell: bash
       - uses: julia-actions/julia-buildpkg@v1
       - name: Compile package
         run: julia --proj=@. -e 'using Pkg; Pkg.add("PackageCompiler"); using PackageCompiler; create_app(".", "PackageReleaseTest (${{ runner.os }})")'
