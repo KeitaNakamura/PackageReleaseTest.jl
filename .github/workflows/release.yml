@@ -41,6 +41,7 @@ jobs:
         shell: bash
       - name: Zip
         run: zip -r ${{ runner.os }} build
+        shell: bash
       - uses: actions/upload-artifact@v2 # upload zip
         with:
           name: ${{ runner.os }}
