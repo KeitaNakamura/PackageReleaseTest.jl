@@ -35,7 +35,7 @@ jobs:
             ${{ runner.os }}-
       - uses: julia-actions/julia-buildpkg@v1
       - name: Compile package
-        run: julia --proj=@. -e 'using Pkg; Pkg.add("PackageCompiler"); using PackageCompiler; create_app(".", "PackageReleaseTest (${{ runner.os }})", force=true)'
+        run: julia --proj=@. -e 'using Pkg; Pkg.add("PackageCompiler"); using PackageCompiler; create_app(".", "PackageReleaseTest (${{ runner.os }})")'
         shell: bash
       - name: Zip build directory for Linux/MacOS
         if: runner.os == 'Linux' || runner.os == 'macOS'
