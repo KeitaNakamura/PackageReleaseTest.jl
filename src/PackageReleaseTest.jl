@@ -36,8 +36,10 @@ struct PointState
 end
 
 function julia_main()::Cint
+    isempty(ARGS) && throw(ArgumentError("input.toml must be given as the first argument"))
+    inputtoml = ARGS[1]
     try
-        main(joinpath("input.toml"))
+        main(splitdir(inputtoml)[1], inputtoml)
     catch
         Base.invokelatest(Base.display_error, Base.catch_stack())
         return 1
@@ -45,17 +47,17 @@ function julia_main()::Cint
     return 0
 end
 
-function main(inputtoml::AbstractString)
+function main(proj_dir::AbstractString, inputtoml::AbstractString)
     dict = TOML.parsefile(inputtoml)
     list = map(collect(keys(dict))) do section
         subdict = dict[section]
         Symbol(section) => (; (Symbol(key) => value for (key, value) in subdict)...)
     end
     input = (; list...)
-    main(input)
+    main(proj_dir, input)
 end
 
-function main(INPUT::NamedTuple)
+function main(proj_dir::AbstractString, INPUT::NamedTuple)
 
     # General
     (xmin, xmax), (ymin, ymax) = INPUT.General.domain
@@ -135,23 +137,23 @@ function main(INPUT::NamedTuple)
 
     # Output files
     ## proj
-    proj_dir = joinpath(INPUT.General.output_folder_name)
-    mkpath(proj_dir)
+    output_dir = joinpath(proj_dir, INPUT.General.output_folder_name)
+    mkpath(output_dir)
 
     ## paraview
-    paraview_file = joinpath(proj_dir, "out")
+    paraview_file = joinpath(output_dir, "out")
     paraview_collection(vtk_save, paraview_file)
 
     ## history
-    csv_file = joinpath(proj_dir, "history.csv")
+    csv_file = joinpath(output_dir, "history.csv")
     open(csv_file, "w") do io
         writedlm(io, ["disp" "force" "disp_inside_pile" "tip_resistance" "inside_resistance" "outside_resistance"], ',')
     end
 
     ## forces
-    mkpath(joinpath(proj_dir, "force_tip"))
-    mkpath(joinpath(proj_dir, "force_inside"))
-    mkpath(joinpath(proj_dir, "force_outside"))
+    mkpath(joinpath(output_dir, "force_tip"))
+    mkpath(joinpath(output_dir, "force_inside"))
+    mkpath(joinpath(output_dir, "force_outside"))
 
     logger = Logger(0.0:INPUT.General.output_interval:total_time; progress = true)
     t = 0.0
@@ -216,11 +218,11 @@ function main(INPUT::NamedTuple)
                 disp_inside_pile = -(find_ground_pos(pointstate.x) - ground_pos0)
                 writedlm(io, [disp force disp_inside_pile sum(@view tip[:,3]) sum(@view inside[:,3]) sum(@view outside[:,3])], ',')
             end
-            open(io -> writedlm(io, tip, ','), joinpath(proj_dir, "force_tip", "force_tip_$(logindex(logger)).csv"), "w")
-            open(io -> writedlm(io, inside, ','), joinpath(proj_dir, "force_inside", "force_inside_$(logindex(logger)).csv"), "w")
-            open(io -> writedlm(io, outside, ','), joinpath(proj_dir, "force_outside", "force_outside_$(logindex(logger)).csv"), "w")
+            open(io -> writedlm(io, tip, ','), joinpath(output_dir, "force_tip", "force_tip_$(logindex(logger)).csv"), "w")
+            open(io -> writedlm(io, inside, ','), joinpath(output_dir, "force_inside", "force_inside_$(logindex(logger)).csv"), "w")
+            open(io -> writedlm(io, outside, ','), joinpath(output_dir, "force_outside", "force_outside_$(logindex(logger)).csv"), "w")
 
-            serialize(joinpath(proj_dir, string("save", logindex(logger))),
+            serialize(joinpath(output_dir, string("save", logindex(logger))),
                       Dict("pointstate" => pointstate,
                            "grid" => grid,
                            "pile" => pile))
