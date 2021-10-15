@@ -35,14 +35,14 @@ jobs:
             ${{ runner.os }}-
       - uses: julia-actions/julia-buildpkg@v1
       - name: Compile package
-        run: julia --proj=@. -e 'using Pkg; Pkg.add("PackageCompiler"); using PackageCompiler; create_app(".", "build", force=true)'
+        run: julia --proj=@. -e 'using Pkg; Pkg.add("PackageCompiler"); using PackageCompiler; create_app(".", "PackageReleaseTest", force=true)'
         shell: bash
       - name: Zip build directory for Linux/MacOS
         if: runner.os == 'Linux' || runner.os == 'macOS'
-        run: zip -r ${{ runner.os }} build
+        run: zip -r ${{ runner.os }} PackageReleaseTest
       - name: Zip build directory for Windows
         if: runner.os == 'Windows'
-        run: Compress-Archive -Path build -DestinationPath Windows
+        run: Compress-Archive -Path PackageReleaseTest -DestinationPath Windows
       - name: Upload zip files
         uses: actions/upload-artifact@v2
         with:
