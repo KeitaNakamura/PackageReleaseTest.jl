@@ -36,6 +36,6 @@ jobs:
             ${{ runner.os }}-test-
             ${{ runner.os }}-
       - uses: julia-actions/julia-buildpkg@v1
-      - run: julia --proj=@. -e 'using Pkg; Pkg.add("PackageCompiler"); using PackageCompiler; create_app("${{ runner.os }}", "build", force=true)'
+      - run: julia --proj=@. -e 'using Pkg; Pkg.add("PackageCompiler"); using PackageCompiler; create_app(".", "${{ runner.os }}", force=true)'
       - name: Zip
         run: zip -r ${{ runner.os }} ${{ runner.os }}
