@@ -65,8 +65,8 @@ jobs:
           fetch-depth: 0
       - name: Write release notes
         run: |
-          echo "## ${{ env.packagename }} $(git describe --abbrev=0 --tags)"
-          echo "**Changelog:**" > notes.txt
+          echo "## ${{ env.packagename }} $(git describe --abbrev=0 --tags)" > notes.txt
+          echo "**Changelog:**" >> notes.txt
           git log --pretty=format:"* %s (%h) (@%an)" $(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))..HEAD >> notes.txt
         shell: bash
       # - name: Show release notes
