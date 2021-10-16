@@ -61,7 +61,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Write release notes
-        run: git log --pretty="* %s (%an)" $(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))..HEAD > notes.txt
+        run: git log --pretty=format:"* %s (%an)" $(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))..HEAD > notes.txt
         shell: bash
       - name: Show release notes
         run: cat notes.txt
