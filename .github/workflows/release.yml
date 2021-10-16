@@ -19,6 +19,11 @@ jobs:
           - x64
     steps:
       - uses: actions/checkout@v2
+      - name: Write release notes
+        run: git log --pretty="* %s (%an)" $(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))..HEAD > notes.txt
+        shell: bash
+      - name: Show release notes
+        run: cat notes.txt
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.version }}
