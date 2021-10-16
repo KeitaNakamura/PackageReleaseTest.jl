@@ -33,7 +33,8 @@ jobs:
             ${{ runner.os }}-test-${{ env.cache-name }}-
             ${{ runner.os }}-test-
             ${{ runner.os }}-
-      - run: julia --proj=@. -e 'using Pkg; Pkg.Registry.add(RegistrySpec(url = "https://github.com/KeitaNakamura/KeitaNakamuraRegistry.git"))'
+      - name: Add custom registry
+        run: julia --proj=@. -e 'using Pkg; Pkg.Registry.add(RegistrySpec(url = "https://github.com/KeitaNakamura/KeitaNakamuraRegistry.git"))'
         shell: bash
       - uses: julia-actions/julia-buildpkg@v1
       - name: Compile package
@@ -65,12 +66,12 @@ jobs:
           echo "**Changelog:**" > notes.txt
           git log --pretty=format:"* %s (%h) (@%an)" $(git describe --abbrev=0 --tags $(git rev-list --tags --skip=1 --max-count=1))..HEAD >> notes.txt
         shell: bash
-      - name: Show release notes
-        run: cat notes.txt
+      # - name: Show release notes
+        # run: cat notes.txt
       - name: Download all zip files
         uses: actions/download-artifact@v2
-      - name: Display structure of downloaded files
-        run: ls -R
+      # - name: Display structure of downloaded files
+        # run: ls -R
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
