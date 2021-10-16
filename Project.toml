@@ -1,7 +1,7 @@
 name = "PackageReleaseTest"
 uuid = "3fac36aa-54f2-405c-a981-23ff7c8a7917"
 authors = ["Keita Nakamura <keita.nakamura.1109@gmail.com>"]
-version = "0.4.13"
+version = "0.4.14"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
