@@ -40,14 +40,14 @@ jobs:
         shell: bash
       - uses: julia-actions/julia-buildpkg@v1
       - name: Compile package
-        run: julia --proj=@. -e 'using Pkg; Pkg.add("PackageCompiler"); using PackageCompiler; create_app(".", "${{ env.packagename }} ${{ GITHUB_REF/refs\/tags\// }} (${{ runner.os }})")'
+        run: julia --proj=@. -e 'using Pkg; Pkg.add("PackageCompiler"); using PackageCompiler; create_app(".", "${{ env.packagename }} ${ GITHUB_REF/refs\/tags\// } (${{ runner.os }})")'
         shell: bash
       - name: Zip build directory for Linux/MacOS
         if: runner.os == 'Linux' || runner.os == 'macOS'
-        run: zip -r ${{ runner.os }} "${{ env.packagename }} ${{ GITHUB_REF/refs\/tags\// }} (${{ runner.os }})"
+        run: zip -r ${{ runner.os }} "${{ env.packagename }} ${ GITHUB_REF/refs\/tags\// } (${{ runner.os }})"
       - name: Zip build directory for Windows
         if: runner.os == 'Windows'
-        run: Compress-Archive -Path "${{ env.packagename }} ${{ GITHUB_REF/refs\/tags\// }} (Windows)" -DestinationPath Windows
+        run: Compress-Archive -Path "${{ env.packagename }} ${ GITHUB_REF/refs\/tags\// } (Windows)" -DestinationPath Windows
       - name: Upload zip files
         uses: actions/upload-artifact@v2
         with:
